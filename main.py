@@ -1,6 +1,10 @@
 import os
 
 os.system("python3 -m pip install selenium pypinyin")
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import UnexpectedAlertPresentException
 from selenium import webdriver
 from pypinyin import pinyin
 
@@ -52,11 +56,19 @@ while True:
 
   print("\nStory ID: " + str(story_id))
 
-  if driver.current_url == "https://www.zbschools.sg/":
-    print("Story does not exist. Skipping...")
-    update_log(f"Story ID: {story_id} | Story does not exist. Skipping...")
-    story_id = update_story_id(story_id)
-    continue
+  try: 
+    if driver.current_url == "https://www.zbschools.sg/":
+      print("Story does not exist. Skipping...")
+      update_log(f"Story ID: {story_id} | Story does not exist. Skipping...")
+      story_id = update_story_id(story_id)
+      continue
+  except UnexpectedAlertPresentException:
+    try:
+        WebDriverWait(driver, 5).until(EC.alert_is_present())
+        alert = driver.switch_to.alert
+        alert.dismiss()
+    except TimeoutException:
+      pass
 
   try:
     start_quiz_button = driver.find_element('xpath', '//*[@id="lo_main"]/div/div[3]/div/div[1]/div[1]/div[3]/div/div/a[4]')
