@@ -15,8 +15,8 @@ def get_story_id():
 
   return story_id
 
-def update_story_id(current_story_id):
-  new_story_id = str(int(current_story_id) + 1)
+def update_story_id(current_story_id, increment=1):
+  new_story_id = str(int(current_story_id) + increment)
   with open('data/story_id.txt', 'w') as f:
     f.write(new_story_id)
   return new_story_id

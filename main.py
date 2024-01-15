@@ -11,10 +11,10 @@ from synthlogging import *
 import atexit
 import time
 
-session_start_time = start_session()
-
 if not os.path.exists('data'):
   os.makedirs('data')
+
+session_start_time = start_session()
 
 devmode = get_dev_mode()
 username, password = get_credentials()
@@ -43,7 +43,7 @@ def on_exit():
   time.sleep(5)
   return sys.exit(0)
 
-atexit.register(on_exit)
+# atexit.register(on_exit)
 
 while True:
   driver.get(base_story_url + str(story_id))
@@ -130,7 +130,7 @@ while True:
       error_message = str(e)
       continue
     
-    print("Story ID: " + str(story_id) + " | Question " + str(i) + " | Question Completed | Answer: " + answer + " | Option: " + str(option_number))
+    print("Story ID: " + str(story_id) + " | Question " + str(i) + " | Option: " + str(option_number) + " | Question Completed")
     amount_of_questions_done += 1
 
   try:
@@ -150,7 +150,10 @@ while True:
     score = "Error Finding Score"
   print("\nStory ID: " + str(story_id) + " | Score: " + score)
 
-  total_points_gained += int(score.replace("%", "")) * 150 / 100
+  try:
+    total_points_gained += int(score.replace("%", "")) * 150 / 100
+  except:
+    pass
 
   end_time_for_this_quiz = time.time()
 
