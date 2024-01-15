@@ -47,7 +47,7 @@ def on_exit():
   time.sleep(5)
   return sys.exit(0)
 
-# atexit.register(on_exit)
+atexit.register(on_exit)
 
 while True:
   driver.get(base_story_url + str(story_id))
@@ -85,7 +85,14 @@ while True:
   """, element)
 
   passage = remove(driver.find_element('xpath', "html/body/div/div/div/div/div/div[3]/div/div[1]/div[1]/div[6]").text, '"')
-  start_quiz_button.click()
+  
+  try:
+    start_quiz_button.click()
+  except:
+    print("Story does not have a quiz. Skipping...")
+    update_log(f"Story ID: {story_id} | Story does not have a quiz. Skipping...")
+    story_id = update_story_id(story_id)
+    continue
 
   time.sleep(1) # wait for quiz to load
   driver.switch_to.frame('litebox_iframe')
