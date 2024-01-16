@@ -1,13 +1,19 @@
 import os
 
-def get_story_id():
+def get_story_id(ask_for_story_id):
   if not os.path.exists('data/story_id.txt'):
     with open('data/story_id.txt', 'w') as f:
-      f.write('15')
+      f.write('0')
 
   with open('data/story_id.txt', 'r') as f:
     story_id = f.read()
 
+  if ask_for_story_id:
+    return ask_story_id(story_id)
+  else:
+    return story_id
+
+def ask_story_id(story_id):
   if input("Would you like to change the story id? Your current story id is " + story_id + ". (y/n): ").lower().strip() == 'y':
     story_id = input("Please enter the new story id: ")
     update_story_id(story_id)

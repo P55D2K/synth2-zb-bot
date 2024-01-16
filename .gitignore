@@ -51,3 +51,5 @@ docs/_build/
 
 /data
 /__pycache__
+
+/settings.json

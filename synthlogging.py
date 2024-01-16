@@ -3,16 +3,17 @@ from func._logs_ import *
 from func._general_ import *
 from synthconstants import *
 
-def start_session():
+def log_session():
   update_log("\n--- SESSION STARTED ---")
   update_log("DateTime: " + time.strftime("%H:%M:%S", time.localtime()) + ", " + time.strftime("%d/%m/%Y", time.localtime()) + "\n")
 
   print(big_text)
   print("Copyright 2023. All rights reserved. (c) ZK\n")
 
-  return time.time()
+def instructions(skip_intro):
+  if skip_intro:
+    return
 
-def instructions():
   print("\nTo exit, press Ctrl + C")
   time.sleep(1)
   print("You can continue doing other things while this program is running")
