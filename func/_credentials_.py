@@ -31,13 +31,14 @@ def change_credentials():
   print("Credentials cleared.\n")
   return get_credentials()
 
-def get_credentials():
+def get_credentials(ask_change_credentials=True):
   if os.path.exists('data/credentials.bin') and os.path.exists('data/key.key'):
-    if input("Would you like to change any credentials? (y/n): ").lower().strip() == 'y':
-      if os.path.exists('data/credentials.bin'):
-        os.remove('data/credentials.bin')
-      if os.path.exists('data/key.key'):
-        os.remove('data/key.key')
+    if ask_change_credentials:
+      if input("Would you like to change any credentials? (y/n): ").lower().strip() == 'y':
+        if os.path.exists('data/credentials.bin'):
+          os.remove('data/credentials.bin')
+        if os.path.exists('data/key.key'):
+          os.remove('data/key.key')
 
   if not os.path.exists('data/credentials.bin') and not os.path.exists('data/key.key'):
     print("Please enter your credentials.")

@@ -18,12 +18,23 @@ import time
 if not os.path.exists('data'):
   os.makedirs('data')
 
-session_start_time = start_session()
+skip_intro = load_data()
 
-devmode = get_dev_mode()
-username, password = get_credentials()
-story_id = get_story_id()
-instructions()
+log_session()
+
+session_start_time = time.time()
+
+if not skip_intro:
+  devmode = get_dev_mode()
+  username, password = get_credentials(True)
+  story_id = get_story_id(True)
+else:
+  devmode = False
+  username, password = get_credentials(False)
+  story_id = get_story_id(False)
+
+devmode = True
+instructions(skip_intro)
 
 driver = webdriver.Chrome(options=get_chrome_options(devmode))
 driver.maximize_window()
@@ -144,6 +155,8 @@ while True:
           option_number = a
           driver.find_element('xpath', f"/html/body/div/div/form/div[{i}]/div[2]/table/tbody/tr[{a}]/td[1]/input").click()
           break
+      if option_number == 0:
+        option_number = "Could not find answer"
     except Exception as e:
       print("Story ID: " + str(story_id) + " | Question " + str(i) + " | Error selecting answer. Skipping...")
       error_message = str(e)
@@ -164,7 +177,7 @@ while True:
   time.sleep(0.05)
   
   try:
-    score = driver.find_element('xpath', '//*[@id="quiz_questions_container"]/div[1]/div[2]/span').text
+    score = driver.find_element('xpath', '/html/body/div/div/div[1]/div[2]/span').text
   except:
     score = "Error Finding Score"
   print("\nStory ID: " + str(story_id) + " | Score: " + score)
@@ -178,12 +191,13 @@ while True:
 
   if devmode:
     print("Story ID: " + str(story_id) + " | Time Taken (Raw): " + str(round(end_time_for_this_quiz - start_time_for_this_quiz, 2)) + " seconds | Time Taken (No Wait): " + str(round(end_time_for_this_quiz - start_time_for_this_quiz - (amount_of_questions_done * 0.05) - 1.05, 2)) + " seconds")
+  
+  if amount_of_questions_done != 0:
+    quizzes_per_min.append(round(60 / (end_time_for_this_quiz - start_time_for_this_quiz), 2))
+    print("\nAverage Quizzes Per Minute: " + str(round(sum(quizzes_per_min) / len(quizzes_per_min), 2)))
 
-  quizzes_per_min.append(round(60 / (end_time_for_this_quiz - start_time_for_this_quiz), 2))
-  print("\nAverage Quizzes Per Minute: " + str(round(sum(quizzes_per_min) / len(quizzes_per_min), 2)))
-
-  points_per_min.append(round(60 / (end_time_for_this_quiz - start_time_for_this_quiz) * 150, 2))
-  print("Average Points Per Minute: " + str(round(sum(points_per_min) / len(points_per_min), 2)))
+    points_per_min.append(round(60 / (end_time_for_this_quiz - start_time_for_this_quiz) * 150, 2))
+    print("Average Points Per Minute: " + str(round(sum(points_per_min) / len(points_per_min), 2)))
 
   update_log(f"Story ID: {story_id} | Questions Done: {amount_of_questions_done} | Questions Allocated: {amount_of_questions_in_this_quiz} | Score: {score} | Raw Time Taken: {str(round(end_time_for_this_quiz - start_time_for_this_quiz, 2))} seconds | Errors: {error_message}")
   print("\nStory ID: " + str(story_id) + " | Quiz Completed, Log Updated")
