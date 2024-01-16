@@ -47,7 +47,7 @@ def on_exit():
   time.sleep(5)
   return sys.exit(0)
 
-atexit.register(on_exit)
+# atexit.register(on_exit)
 
 while True:
   driver.get(base_story_url + str(story_id))
@@ -144,6 +144,7 @@ while True:
           option_number = a
           driver.find_element('xpath', f"/html/body/div/div/form/div[{i}]/div[2]/table/tbody/tr[{a}]/td[1]/input").click()
           break
+        option_number = "Error selecting answer"
     except Exception as e:
       print("Story ID: " + str(story_id) + " | Question " + str(i) + " | Error selecting answer. Skipping...")
       error_message = str(e)
