@@ -1,5 +1,11 @@
 # Full Version History
 
+## 0.1.3b
+
+- bypassed blocksi
+- bypassed screen time (macOS), does not bypass DMA restrictions
+- fixed bug where it would return error before doing quizzes
+
 ## 0.1.3a
 
 - made devmode run slower for easier debugging
