@@ -50,13 +50,14 @@ quizzes_completed_this_session = 0
 def on_exit():
   if len(quizzes_per_min) == 0 or len(points_per_min) == 0 or quizzes_completed_this_session == 0:
     update_log("--- SESSION ENDED ---\n")
-    return sys.exit(0)
-  
+    print("\033c")
+    return
+
   end_session(session_start_time, quizzes_per_min, points_per_min, quizzes_completed_this_session)
   driver.quit()
 
   time.sleep(5)
-  return sys.exit(0)
+  return
 
 atexit.register(on_exit)
 
