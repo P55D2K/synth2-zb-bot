@@ -34,7 +34,7 @@ else:
   story_id = get_story_id(False)
 
 # devmode = True # testing only
-instructions(skip_intro)
+instructions(skip_intro, devmode)
 
 driver = webdriver.Chrome(options=get_chrome_options(devmode))
 driver.maximize_window()
@@ -114,6 +114,8 @@ while True:
   amount_of_questions_in_this_quiz = len(driver.find_elements('xpath', "/html/body/div/div/form/div")) - 1
   amount_of_questions_done = 0
 
+  answers_for_this_quiz = []
+
   for i in range(1, amount_of_questions_in_this_quiz + 1):
     print("\nStory ID: " + str(story_id) + " | Question " + str(i))
     
@@ -123,6 +125,7 @@ while True:
       question = driver.find_element('xpath', "/html/body/div/div/form/div[" + str(i) + "]/div[1]/div[1]/h3/span").text
     except:
       print("Story ID: " + str(story_id) + " | Question " + str(i) + " | Question not found. Skipping...")
+      answers_for_this_quiz.append("Error")
       continue
 
     driver.execute_script("arguments[0].scrollIntoView();", driver.find_element('xpath', "/html/body/div/div/form/div[" + str(i) + "]/div[1]/div[1]/h3/span"))
@@ -138,6 +141,7 @@ while True:
           answer += passage[n + part1 + len(parts[0])]
       except:
         print("Story ID: " + str(story_id) + " | Question " + str(i) + " | Error finding answer. Skipping...")
+        answers_for_this_quiz.append("Error")
         continue
 
     else: # qntype 0
@@ -147,6 +151,7 @@ while True:
         answer = ' '.join([x[0] for x in answer])
       except:
         print("Story ID: " + str(story_id) + " | Question " + str(i) + " | Error finding answer. Skipping...")
+        answers_for_this_quiz.append("Error")
         continue
 
     amount_of_options = len(driver.find_elements('xpath', f"/html/body/div/div/form/div[{i}]/div[2]/table/tbody/tr"))
@@ -155,7 +160,7 @@ while True:
     try:
       for a in range(1, amount_of_options + 1):
         qn_ans = driver.find_element('xpath', f"/html/body/div/div/form/div[{i}]/div[2]/table/tbody/tr[{a}]/td[2]").text
-        if qn_ans in answer or answer in qn_ans:
+        if qn_ans == answer:
           option_number = a
           driver.find_element('xpath', f"/html/body/div/div/form/div[{i}]/div[2]/table/tbody/tr[{a}]/td[1]/input").click()
           break
@@ -163,11 +168,17 @@ while True:
         option_number = "Could not find answer"
     except Exception as e:
       print("Story ID: " + str(story_id) + " | Question " + str(i) + " | Error selecting answer. Skipping...")
+      answers_for_this_quiz.append("Error")
       error_message = str(e)
       continue
     
     print("Story ID: " + str(story_id) + " | Question " + str(i) + " | Option: " + str(option_number) + " | Question Completed")
     amount_of_questions_done += 1
+
+    if option_number == "Could not find answer":
+      answers_for_this_quiz.append("Error")
+    else:
+      answers_for_this_quiz.append(option_number)
 
     if devmode:
       time.sleep(1)
@@ -209,6 +220,7 @@ while True:
     print("Average Points Per Minute: " + str(round(sum(points_per_min) / len(points_per_min), 2)))
 
   update_log(f"Story ID: {story_id} | Questions Done: {amount_of_questions_done} | Questions Allocated: {amount_of_questions_in_this_quiz} | Score: {score} | Raw Time Taken: {str(round(end_time_for_this_quiz - start_time_for_this_quiz, 2))} seconds | Errors: {error_message}")
+  update_answers(story_id, answers_for_this_quiz)
   print("\nStory ID: " + str(story_id) + " | Quiz Completed, Log Updated")
 
   story_id = update_story_id(story_id)

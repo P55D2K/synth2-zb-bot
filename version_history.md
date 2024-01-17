@@ -1,5 +1,10 @@
 # Full Version History
 
+## 0.1.4
+
+- creates a answer file to store answers
+- fixed bug where it would select wrong hanyupinyin
+
 ## 0.1.3b
 
 - bypassed blocksi
