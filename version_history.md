@@ -1,5 +1,9 @@
 # Full Version History
 
+## 0.1.3a
+
+- made devmode run slower for easier debugging
+
 ## 0.1.2
 
 - added options to skip intro and settings file

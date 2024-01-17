@@ -33,7 +33,7 @@ else:
   username, password = get_credentials(False)
   story_id = get_story_id(False)
 
-devmode = True
+# devmode = True # testing only
 instructions(skip_intro)
 
 driver = webdriver.Chrome(options=get_chrome_options(devmode))
@@ -68,7 +68,7 @@ while True:
   print("\nStory ID: " + str(story_id))
 
   try: 
-    if driver.current_url == "https://www.zbschools.sg/":
+    if driver.current_url != base_story_url + str(story_id):
       print("Story does not exist. Skipping...")
       update_log(f"Story ID: {story_id} | Story does not exist. Skipping...")
       story_id = update_story_id(story_id)
@@ -124,6 +124,8 @@ while True:
       print("Story ID: " + str(story_id) + " | Question " + str(i) + " | Question not found. Skipping...")
       continue
 
+    driver.execute_script("arguments[0].scrollIntoView();", driver.find_element('xpath', "/html/body/div/div/form/div[" + str(i) + "]/div[1]/div[1]/h3/span"))
+
     if "_" in question: # qntype 1
       try:
         parts = question.split("_")
@@ -151,7 +153,8 @@ while True:
     option_number = 0
     try:
       for a in range(1, amount_of_options + 1):
-        if driver.find_element('xpath', f"/html/body/div/div/form/div[{i}]/div[2]/table/tbody/tr[{a}]/td[2]").text == answer:
+        qn_ans = driver.find_element('xpath', f"/html/body/div/div/form/div[{i}]/div[2]/table/tbody/tr[{a}]/td[2]").text
+        if qn_ans in answer or answer in qn_ans:
           option_number = a
           driver.find_element('xpath', f"/html/body/div/div/form/div[{i}]/div[2]/table/tbody/tr[{a}]/td[1]/input").click()
           break
@@ -165,6 +168,9 @@ while True:
     print("Story ID: " + str(story_id) + " | Question " + str(i) + " | Option: " + str(option_number) + " | Question Completed")
     amount_of_questions_done += 1
 
+    if devmode:
+      time.sleep(1)
+
   try:
     submit_button = driver.find_element('xpath', f"/html/body/div/div/form/div[{amount_of_questions_in_this_quiz + 1}]/input")
     submit_button.click()
@@ -174,7 +180,9 @@ while True:
     story_id = update_story_id(story_id)
     continue
 
-  time.sleep(0.05)
+  time.sleep(0.1)
+  if devmode:
+    time.sleep(1)
   
   try:
     score = driver.find_element('xpath', '/html/body/div/div/div[1]/div[2]/span').text
@@ -190,7 +198,7 @@ while True:
   end_time_for_this_quiz = time.time()
 
   if devmode:
-    print("Story ID: " + str(story_id) + " | Time Taken (Raw): " + str(round(end_time_for_this_quiz - start_time_for_this_quiz, 2)) + " seconds | Time Taken (No Wait): " + str(round(end_time_for_this_quiz - start_time_for_this_quiz - (amount_of_questions_done * 0.05) - 1.05, 2)) + " seconds")
+    print("Story ID: " + str(story_id) + " | Time Taken (Raw): " + str(round(end_time_for_this_quiz - start_time_for_this_quiz, 2)) + " seconds | Time Taken (No Wait): " + str(round(end_time_for_this_quiz - start_time_for_this_quiz - amount_of_questions_done - 2.1, 2)) + " seconds")
   
   if amount_of_questions_done != 0:
     quizzes_per_min.append(round(60 / (end_time_for_this_quiz - start_time_for_this_quiz), 2))
