@@ -33,7 +33,6 @@ else:
   username, password = get_credentials(False)
   story_id = get_story_id(False)
 
-devmode = True
 instructions(skip_intro)
 
 driver = webdriver.Chrome(options=get_chrome_options(devmode))
