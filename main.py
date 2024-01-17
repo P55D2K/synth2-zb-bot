@@ -68,7 +68,7 @@ while True:
   print("\nStory ID: " + str(story_id))
 
   try: 
-    if driver.current_url == "https://www.zbschools.sg/":
+    if driver.current_url != base_story_url + str(story_id):
       print("Story does not exist. Skipping...")
       update_log(f"Story ID: {story_id} | Story does not exist. Skipping...")
       story_id = update_story_id(story_id)
