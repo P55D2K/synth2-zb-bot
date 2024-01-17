@@ -10,7 +10,7 @@ def log_session():
   print(big_text)
   print("Copyright 2023. All rights reserved. (c) ZK\n")
 
-def instructions(skip_intro):
+def instructions(skip_intro, devmode):
   if skip_intro:
     return
 
@@ -18,7 +18,16 @@ def instructions(skip_intro):
   time.sleep(1)
   print("You can continue doing other things while this program is running")
   time.sleep(1)
-  print("Do not close the browser window that opens, or login to ZBSchools from somewhere else.")
+
+  if devmode:
+    print("You are in developer mode. You will be able to see the browser window.")
+    time.sleep(1)
+    print("Do not close the browser window that opens, or login to ZBSchools from somewhere else.")
+  else:
+    print("You are not in developer mode. You will not be able to see the browser window.")
+    time.sleep(1)
+    print("Do not close the browser window that opens, or login to ZBSchools from somewhere else.")
+  
   time.sleep(1)
   print("If there is an error, increase the story ID by 1 and try again.")
   time.sleep(1)
