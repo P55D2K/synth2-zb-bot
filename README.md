@@ -1,7 +1,7 @@
 <div id="top"></div>
 <br/>
 <div align="center">
-  <h1>synth2_0.1.1</h1>
+  <h1>synth2_0.1.4</h1>
 
 [![Author](https://img.shields.io/badge/author-p55d2k-lightgrey.svg?style=flat&color=%23673ab7)](https://github.com/p55d2k)
 [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat&color=%232196f3)](https://github.com/p55d2k/synth2-zb-bot/LICENSE)
